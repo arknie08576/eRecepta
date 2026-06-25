@@ -57,19 +57,19 @@ http://localhost:8080/swagger-ui/index.html
 ```bash
 curl -X POST http://localhost:8080/api/patients \
   -H "Content-Type: application/json" \
-  -d '{"pesel": "12345678901", "firstName": "Jan", "lastName": "Kowalski"}'
+  -d '{"pesel": "90010100009", "firstName": "Jan", "lastName": "Kowalski"}'
 ```
 
 ### Pobranie pacjenta
 
 ```bash
-curl http://localhost:8080/api/patients/12345678901
+curl http://localhost:8080/api/patients/90010100009
 ```
 
 ### Dodanie recepty
 
 ```bash
-curl -X POST http://localhost:8080/api/patients/12345678901/prescriptions \
+curl -X POST http://localhost:8080/api/patients/90010100009/prescriptions \
   -H "Content-Type: application/json" \
   -d '{"medicationName": "Ibuprom", "dosage": "200mg"}'
 ```
@@ -77,7 +77,7 @@ curl -X POST http://localhost:8080/api/patients/12345678901/prescriptions \
 ### Usunięcie recepty
 
 ```bash
-curl -X DELETE http://localhost:8080/api/patients/12345678901/prescriptions/{id}
+curl -X DELETE http://localhost:8080/api/patients/90010100009/prescriptions/{id}
 ```
 
 ## Uruchomienie testów

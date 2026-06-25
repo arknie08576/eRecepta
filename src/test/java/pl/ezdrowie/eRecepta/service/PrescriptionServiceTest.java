@@ -34,7 +34,7 @@ class PrescriptionServiceTest {
     @InjectMocks
     private PrescriptionService prescriptionService;
 
-    private static final String PESEL = "12345678901";
+    private static final String PESEL = "90010100009";
     private static final PrescriptionRequest REQUEST = new PrescriptionRequest("Ibuprom", "200mg");
 
     @Test

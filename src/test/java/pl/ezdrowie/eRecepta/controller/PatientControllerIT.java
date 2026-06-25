@@ -33,7 +33,7 @@ class PatientControllerIT {
 
     private MockMvc mockMvc;
 
-    private static final String PESEL = "12345678901";
+    private static final String PESEL = "90010100009";
     private static final PatientRequest VALID_REQUEST = new PatientRequest(PESEL, "Jan", "Kowalski");
 
     @BeforeEach
@@ -70,6 +70,18 @@ class PatientControllerIT {
     @Test
     void addPatient_invalidPesel_returns400() throws Exception {
         PatientRequest invalid = new PatientRequest("123", "Jan", "Kowalski");
+
+        mockMvc.perform(post("/api/patients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalid)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
+    void addPatient_invalidChecksum_returns400() throws Exception {
+        // 11 digits but a wrong control digit - rejected by the PESEL checksum
+        PatientRequest invalid = new PatientRequest("12345678901", "Jan", "Kowalski");
 
         mockMvc.perform(post("/api/patients")
                         .contentType(MediaType.APPLICATION_JSON)

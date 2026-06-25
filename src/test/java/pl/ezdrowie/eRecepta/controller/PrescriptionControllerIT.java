@@ -36,7 +36,7 @@ class PrescriptionControllerIT {
 
     private MockMvc mockMvc;
 
-    private static final String PESEL = "12345678901";
+    private static final String PESEL = "90010100009";
     private static final String PRESCRIPTIONS_URL = "/api/patients/{pesel}/prescriptions";
 
     @BeforeEach

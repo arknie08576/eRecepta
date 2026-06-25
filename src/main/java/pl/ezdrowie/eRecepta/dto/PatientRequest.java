@@ -1,11 +1,11 @@
 package pl.ezdrowie.eRecepta.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import pl.ezdrowie.eRecepta.validation.Pesel;
 
 public record PatientRequest(
         @NotBlank(message = "PESEL is required")
-        @Pattern(regexp = "\\d{11}", message = "PESEL must contain exactly 11 digits")
+        @Pesel
         String pesel,
 
         @NotBlank(message = "First name is required")

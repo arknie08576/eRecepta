@@ -31,7 +31,7 @@ class PatientServiceTest {
     @InjectMocks
     private PatientService patientService;
 
-    private static final String PESEL = "12345678901";
+    private static final String PESEL = "90010100009";
     private static final PatientRequest REQUEST = new PatientRequest(PESEL, "Jan", "Kowalski");
 
     @Test
