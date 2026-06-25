@@ -121,3 +121,18 @@ mvnw.cmd verify
 ```
 
 `./mvnw test` uruchamia same testy jednostkowe; testy integracyjne (`*IT`) wykonują się w fazie `verify` przez maven-failsafe-plugin.
+
+## Założenia i ograniczenia
+
+Zakres jest celowo minimalny — zgodny z treścią zadania („prosta aplikacja", dane w pamięci, bez bazy). Świadome uproszczenia:
+
+- **Brak bazy danych** — dane przechowywane w pamięci (`ConcurrentHashMap`), restart aplikacji czyści stan (zgodnie z wymaganiami zadania).
+- **Brak uwierzytelniania i autoryzacji** — wszystkie endpointy są otwarte, nie ma ról użytkowników.
+- **Recepta bez wystawiającego lekarza** — model odwzorowuje dokładnie zakres z zadania (`pesel`, nazwa leku, dawka).
+
+Wersja produkcyjna obsługująca dane medyczne wymagałaby co najmniej:
+
+- trwałego składowania (np. PostgreSQL + Spring Data JPA),
+- Spring Security z rolami (`LEKARZ`, `PACJENT`, …) i autoryzacją na poziomie operacji,
+- powiązania recepty z wystawiającym lekarzem (numer PWZ),
+- audytu zmian i zgodności z RODO.
