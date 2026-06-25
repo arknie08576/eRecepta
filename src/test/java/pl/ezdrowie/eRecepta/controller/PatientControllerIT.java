@@ -79,6 +79,24 @@ class PatientControllerIT {
     }
 
     @Test
+    void addPatient_missingPesel_returns400() throws Exception {
+        mockMvc.perform(post("/api/patients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\":\"Jan\",\"lastName\":\"Kowalski\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400));
+    }
+
+    @Test
+    void addPatient_malformedJson_returns400() throws Exception {
+        mockMvc.perform(post("/api/patients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ not valid json "))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400));
+    }
+
+    @Test
     void getAllPatients_returnsArray() throws Exception {
         mockMvc.perform(get("/api/patients"))
                 .andExpect(status().isOk())

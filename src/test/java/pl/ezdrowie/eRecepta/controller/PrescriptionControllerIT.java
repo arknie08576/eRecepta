@@ -100,4 +100,11 @@ class PrescriptionControllerIT {
         mockMvc.perform(delete(PRESCRIPTIONS_URL + "/{id}", PESEL, "00000000-0000-0000-0000-000000000000"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void deletePrescription_malformedId_returns400() throws Exception {
+        mockMvc.perform(delete(PRESCRIPTIONS_URL + "/{id}", PESEL, "not-a-uuid"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400));
+    }
 }
