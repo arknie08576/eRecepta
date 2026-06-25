@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.ezdrowie.eRecepta.dto.PrescriptionRequest;
-import pl.ezdrowie.eRecepta.model.Prescription;
+import pl.ezdrowie.eRecepta.dto.PrescriptionResponse;
 import pl.ezdrowie.eRecepta.service.PrescriptionService;
 
 import java.util.List;
@@ -20,16 +20,19 @@ public class PrescriptionController {
     private final PrescriptionService prescriptionService;
 
     @PostMapping
-    public ResponseEntity<Prescription> addPrescription(
+    public ResponseEntity<PrescriptionResponse> addPrescription(
             @PathVariable String pesel,
             @Valid @RequestBody PrescriptionRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(prescriptionService.addPrescription(pesel, request));
+        PrescriptionResponse response = PrescriptionResponse.from(prescriptionService.addPrescription(pesel, request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<Prescription>> getPrescriptions(@PathVariable String pesel) {
-        return ResponseEntity.ok(prescriptionService.getPrescriptionsByPesel(pesel));
+    public ResponseEntity<List<PrescriptionResponse>> getPrescriptions(@PathVariable String pesel) {
+        List<PrescriptionResponse> response = prescriptionService.getPrescriptionsByPesel(pesel).stream()
+                .map(PrescriptionResponse::from)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")

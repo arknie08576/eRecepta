@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import pl.ezdrowie.eRecepta.dto.PatientRequest;
 import pl.ezdrowie.eRecepta.dto.PrescriptionRequest;
-import pl.ezdrowie.eRecepta.model.Prescription;
+import pl.ezdrowie.eRecepta.dto.PrescriptionResponse;
 import pl.ezdrowie.eRecepta.repository.PatientRepository;
 import pl.ezdrowie.eRecepta.repository.PrescriptionRepository;
 
@@ -60,7 +60,8 @@ class PrescriptionControllerIT {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.medicationName").value("Ibuprom"))
-                .andExpect(jsonPath("$.dosage").value("200mg"));
+                .andExpect(jsonPath("$.dosage").value("200mg"))
+                .andExpect(jsonPath("$.pesel").doesNotExist());
     }
 
     @Test
@@ -89,9 +90,9 @@ class PrescriptionControllerIT {
                         .content(objectMapper.writeValueAsString(new PrescriptionRequest("Ibuprom", "200mg"))))
                 .andReturn();
 
-        Prescription prescription = objectMapper.readValue(result.getResponse().getContentAsString(), Prescription.class);
+        PrescriptionResponse prescription = objectMapper.readValue(result.getResponse().getContentAsString(), PrescriptionResponse.class);
 
-        mockMvc.perform(delete(PRESCRIPTIONS_URL + "/{id}", PESEL, prescription.getId()))
+        mockMvc.perform(delete(PRESCRIPTIONS_URL + "/{id}", PESEL, prescription.id()))
                 .andExpect(status().isNoContent());
     }
 
