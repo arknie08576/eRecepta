@@ -91,6 +91,28 @@ class PatientControllerIT {
     }
 
     @Test
+    void addPatient_blankFirstName_returns400() throws Exception {
+        PatientRequest invalid = new PatientRequest(PESEL, "", "Kowalski");
+
+        mockMvc.perform(post("/api/patients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalid)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400));
+    }
+
+    @Test
+    void addPatient_blankLastName_returns400() throws Exception {
+        PatientRequest invalid = new PatientRequest(PESEL, "Jan", "  ");
+
+        mockMvc.perform(post("/api/patients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalid)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400));
+    }
+
+    @Test
     void addPatient_missingPesel_returns400() throws Exception {
         mockMvc.perform(post("/api/patients")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -113,6 +135,19 @@ class PatientControllerIT {
         mockMvc.perform(get("/api/patients"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
+    }
+
+    @Test
+    void getAllPatients_afterAdd_containsPatient() throws Exception {
+        mockMvc.perform(post("/api/patients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(VALID_REQUEST)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/patients"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].pesel").value(PESEL));
     }
 
     @Test

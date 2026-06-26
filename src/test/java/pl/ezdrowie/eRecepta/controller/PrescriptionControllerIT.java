@@ -73,6 +73,24 @@ class PrescriptionControllerIT {
     }
 
     @Test
+    void addPrescription_blankMedicationName_returns400() throws Exception {
+        mockMvc.perform(post(PRESCRIPTIONS_URL, PESEL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new PrescriptionRequest("", "200mg"))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400));
+    }
+
+    @Test
+    void addPrescription_blankDosage_returns400() throws Exception {
+        mockMvc.perform(post(PRESCRIPTIONS_URL, PESEL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new PrescriptionRequest("Ibuprom", "  "))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400));
+    }
+
+    @Test
     void getPrescriptions_returnsList() throws Exception {
         mockMvc.perform(post(PRESCRIPTIONS_URL, PESEL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -107,5 +125,27 @@ class PrescriptionControllerIT {
         mockMvc.perform(delete(PRESCRIPTIONS_URL + "/{id}", PESEL, "not-a-uuid"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400));
+    }
+
+    @Test
+    void deletingPatient_cascadeRemovesPrescriptions() throws Exception {
+        // given a prescription for the patient created in setUp
+        mockMvc.perform(post(PRESCRIPTIONS_URL, PESEL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new PrescriptionRequest("Ibuprom", "200mg"))))
+                .andExpect(status().isCreated());
+
+        // when the patient is deleted
+        mockMvc.perform(delete("/api/patients/{pesel}", PESEL))
+                .andExpect(status().isNoContent());
+
+        // then re-creating the same patient shows no leftover prescriptions
+        mockMvc.perform(post("/api/patients")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new PatientRequest(PESEL, "Jan", "Kowalski"))));
+
+        mockMvc.perform(get(PRESCRIPTIONS_URL, PESEL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
     }
 }
