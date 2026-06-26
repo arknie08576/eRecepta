@@ -1,6 +1,6 @@
 # eRecepta
 
-REST API do zarządzania pacjentami i receptami, zrealizowane w ramach zadania rekrutacyjnego dla Centrum e-Zdrowia.
+REST API do zarządzania pacjentami i receptami, zrealizowane w ramach zadania rekrutacyjnego.
 
 ## Stack technologiczny
 
